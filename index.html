@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Buku Tamu</title>
+<link rel="icon" type="image/png" href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjiswXTIPorJtky03e8D2N_5OzX1GYn0ufim4km6YMymg6MxWU_JBuNdLqVu_i97qsEF0_-MZn9OhSupaoZ_mH0mkImgp3KqPoxHVateHlbdlguOqf-tYWS9BioY64QQ90SmL_8hHuMmNs2tU0kO2p43eQ3jQQ784nCe60Sk9xp5399WBhJOincLPseHn18/s320/icon-buku-tamu-512.png">
+<link rel="apple-touch-icon" href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjiswXTIPorJtky03e8D2N_5OzX1GYn0ufim4km6YMymg6MxWU_JBuNdLqVu_i97qsEF0_-MZn9OhSupaoZ_mH0mkImgp3KqPoxHVateHlbdlguOqf-tYWS9BioY64QQ90SmL_8hHuMmNs2tU0kO2p43eQ3jQQ784nCe60Sk9xp5399WBhJOincLPseHn18/s320/icon-buku-tamu-512.png">
+<style>
+:root{
+  --ink:#14262b;--muted:#5f7478;--brand:#0f6b6e;--brand-d:#0b4f52;--brand-l:#e3f1f1;
+  --accent:#e8a33d;--bg:#f2f6f6;--card:#fff;--line:#dce6e7;--danger:#c0392b;--ok:#1f8a5b;
+  --r:14px;--shadow:0 1px 2px rgba(15,60,64,.06),0 6px 24px rgba(15,60,64,.07)
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+.hidden{display:none!important}
+svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* ---------- Header ---------- */
+.topbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:10px 16px;padding-top:max(10px,env(safe-area-inset-top));background:linear-gradient(135deg,var(--brand-d),var(--brand));color:#fff;box-shadow:0 2px 12px rgba(0,0,0,.15)}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.logo{width:38px;height:38px;border-radius:11px;background:rgba(255,255,255,.18);display:grid;place-items:center;flex:none}
+.logo{overflow:hidden}
+.logo img{width:100%;height:100%;object-fit:cover;display:block;border-radius:11px}
+.btn.danger{background:var(--danger);color:#fff;box-shadow:none}
+.btn.danger:hover{background:#a02f23}
+.btn.ghost.danger-o{color:var(--danger);border-color:#efc4be}
+.btn.ghost.danger-o:hover{background:#fdecea}
+.aksi-wrap{display:flex;gap:6px;flex-wrap:wrap}
+.confirm-sheet{max-width:420px!important;text-align:center}
+.confirm-sheet p{margin:0;color:var(--muted)}
+.confirm-sheet .actions{justify-content:center!important}
+.brand b{display:block;font-size:17px;line-height:1.2}
+.brand small{display:block;opacity:.8;font-size:12px}
+.top-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.chip{border:1px solid rgba(255,255,255,.4);background:transparent;color:#fff;font:inherit;font-size:13px;font-weight:600;padding:7px 12px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.chip.active{background:#fff;color:var(--brand-d);border-color:#fff}
+@media(max-width:480px){.brand small{display:none}.chip{padding:7px 10px;font-size:12.5px}}
+
+/* ---------- Layout ---------- */
+main{max-width:1240px;margin:0 auto;padding:16px 14px 96px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:16px}
+.card h2{margin:0 0 4px;font-size:18px}
+.sub{margin:0 0 14px;color:var(--muted);font-size:13.5px}
+.tamu-grid{display:grid;gap:16px}
+
+.grid-form{display:grid;gap:14px;grid-template-columns:1fr}
+.f{display:flex;flex-direction:column;gap:6px;min-width:0}
+.f>span,.lbl{font-weight:600;font-size:13px}
+.f>span i,.lbl i{color:var(--danger);font-style:normal}
+input,textarea{width:100%;font:inherit;font-size:16px;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);min-height:44px}
+textarea{resize:vertical;min-height:78px}
+input:focus,textarea:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(15,107,110,.15)}
+.kode{letter-spacing:.45em;text-align:center;font-weight:700;font-size:22px}
+.row-inline{display:flex;gap:8px;align-items:stretch}
+.hint{font-size:12px;color:var(--muted)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:inherit;font-weight:700;font-size:15px;border:0;border-radius:11px;padding:12px 18px;min-height:46px;cursor:pointer;background:var(--brand);color:#fff;transition:background .15s,transform .05s}
+.btn:hover{background:var(--brand-d)}
+.btn:active{transform:translateY(1px)}
+.btn.ghost{background:#fff;color:var(--brand-d);border:1.5px solid var(--line)}
+.btn.ghost:hover{background:var(--brand-l)}
+.btn.sm{padding:7px 12px;min-height:36px;font-size:13px;border-radius:9px}
+.btn.block{width:100%}
+.btn.busy{opacity:.7;pointer-events:none}
+.btn.busy::after{content:"";width:14px;height:14px;border:2px solid rgba(255,255,255,.5);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+.btn.ghost.busy::after{border-color:rgba(15,107,110,.3);border-top-color:var(--brand)}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.alert{padding:12px 14px;border-radius:11px;font-size:14px;margin-bottom:14px}
+.alert.ok{background:#e4f6ec;color:#14633f;border:1px solid #b8e4cd}
+
+/* ---------- Tanda tangan ---------- */
+.pad{position:relative;border:1.5px dashed #9bb5b8;border-radius:12px;background:#fff;overflow:hidden}
+.pad canvas{display:block;width:100%;aspect-ratio:5/2;touch-action:none;cursor:crosshair}
+.pad .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#9aaeb1;font-size:14px;pointer-events:none}
+.pad .base{position:absolute;left:8%;right:8%;bottom:24%;border-bottom:1px solid #d5e0e1;pointer-events:none}
+.pad-tools{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
+
+/* ---------- Daftar tamu hari ini ---------- */
+.side h2{display:flex;justify-content:space-between;align-items:center}
+.badge{background:var(--brand-l);color:var(--brand-d);font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px}
+.item{display:flex;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+.item:first-child{border-top:0}
+.no{flex:none;width:34px;height:34px;border-radius:10px;background:var(--brand-l);color:var(--brand-d);font-weight:700;display:grid;place-items:center;font-size:13px}
+.item b{display:block;line-height:1.3}
+.item small{color:var(--muted)}
+.empty{color:var(--muted);text-align:center;padding:18px 8px;font-size:14px}
+
+/* ---------- Login ---------- */
+.login{max-width:400px;margin:24px auto}
+
+/* ---------- Admin ---------- */
+.anav{position:fixed;left:0;right:0;bottom:0;z-index:25;display:flex;background:#fff;border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);box-shadow:0 -4px 16px rgba(15,60,64,.08)}
+.anav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:9px 4px;font:inherit;font-size:11.5px;font-weight:600;color:var(--muted);background:none;border:0;cursor:pointer}
+.anav button.on{color:var(--brand-d)}
+.anav button.on svg{stroke:var(--brand)}
+.pane{min-width:0}
+.toolbar{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.toolbar input{flex:1;min-width:180px}
+
+.tablewrap{overflow-x:auto}
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl th{position:sticky;top:0;text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);background:#f7fafa;padding:10px;border-bottom:1px solid var(--line);white-space:nowrap}
+.tbl td{padding:10px;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl td.pre{white-space:pre-wrap;min-width:150px}
+.tbl img{display:block;height:44px;width:auto;background:#fff;border:1px solid var(--line);border-radius:6px}
+.pager{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:12px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.pager div{display:flex;gap:8px}
+
+@media(max-width:699px){
+  .tbl thead{display:none}
+  .tbl,.tbl tbody,.tbl tr,.tbl td{display:block;width:100%}
+  .tbl tr{background:#fff;border:1px solid var(--line);border-radius:12px;margin-bottom:12px;padding:8px 12px}
+  .tbl td{display:flex;gap:12px;justify-content:space-between;padding:6px 0;border:0;text-align:right}
+  .tbl td::before{content:attr(data-label);font-weight:600;color:var(--muted);text-align:left;flex:0 0 38%;font-size:13px}
+  .tbl td.pre{min-width:0}
+  .tbl td.aksi{justify-content:flex-end}
+  .tbl td.aksi::before{display:none}
+  .tbl img{height:50px}
+  #listCard{padding:12px;background:transparent;border:0;box-shadow:none}
+}
+
+/* ---------- Modal ---------- */
+.modal{position:fixed;inset:0;z-index:50;background:rgba(10,30,34,.55);display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:#fff;width:100%;max-height:94vh;overflow-y:auto;border-radius:20px 20px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom))}
+.sheet h2{margin:0 0 14px;font-size:18px}
+.sheet .actions{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
+.ttd-cur{border:1px solid var(--line);border-radius:10px;padding:8px;background:#fff;display:inline-block}
+.ttd-cur img{display:block;max-height:80px;max-width:100%}
+
+/* ---------- Toast ---------- */
+#toast{position:fixed;left:50%;bottom:90px;transform:translate(-50%,20px);background:#14262b;color:#fff;padding:11px 16px;border-radius:12px;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:80;max-width:92vw;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+#toast.err{background:var(--danger)}
+#toast.ok{background:var(--ok)}
+
+/* ---------- Tablet ---------- */
+@media(min-width:700px){
+  main{padding:24px 24px 40px}
+  .card{padding:22px}
+  .grid-form{grid-template-columns:1fr 1fr;gap:16px}
+  .span2{grid-column:1/-1}
+  .anav{position:static;border:1px solid var(--line);border-radius:var(--r);padding:6px;gap:6px;margin-bottom:16px;box-shadow:var(--shadow)}
+  .anav button{flex-direction:row;justify-content:center;gap:8px;font-size:14px;border-radius:10px;padding:11px 8px}
+  .anav button.on{background:var(--brand-l)}
+  .modal{align-items:center;padding:20px}
+  .sheet{max-width:680px;border-radius:18px;padding:24px}
+  #toast{bottom:28px}
+  .login{margin-top:48px}
+}
+
+/* ---------- Laptop / desktop ---------- */
+@media(min-width:1100px){
+  .tamu-grid{grid-template-columns:minmax(0,1.6fr) minmax(320px,1fr);align-items:start;gap:24px}
+  .side{position:sticky;top:84px}
+  .admin{display:grid;grid-template-columns:230px minmax(0,1fr);gap:24px;align-items:start}
+  .anav{flex-direction:column;position:sticky;top:84px;margin-bottom:0}
+  .anav button{justify-content:flex-start;padding:13px 14px}
+}
+
+/* ---------- Tampilan awal (dipercantik) ---------- */
+body{background:
+  radial-gradient(900px 420px at 100% -10%,rgba(15,107,110,.13),transparent 60%),
+  radial-gradient(700px 380px at -10% 0%,rgba(232,163,61,.12),transparent 55%),
+  var(--bg);background-attachment:fixed}
+.hero{grid-column:1/-1;position:relative;overflow:hidden;border-radius:20px;padding:22px 20px;color:#fff;
+  background:linear-gradient(135deg,#0b4f52 0%,#0f6b6e 55%,#17888b 100%);box-shadow:0 10px 30px rgba(11,79,82,.28)}
+.hero::before,.hero::after{content:"";position:absolute;border-radius:50%;pointer-events:none}
+.hero::before{width:260px;height:260px;right:-70px;top:-90px;background:rgba(255,255,255,.09)}
+.hero::after{width:170px;height:170px;right:80px;bottom:-110px;background:rgba(232,163,61,.28)}
+.hero>*{position:relative;z-index:1}
+.hero .tgl{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.25);padding:5px 12px;border-radius:999px;font-size:12.5px;font-weight:600}
+.hero .tgl svg{width:15px;height:15px}
+.hero h1{margin:12px 0 4px;font-size:26px;line-height:1.2;letter-spacing:-.01em}
+.hero p{margin:0;opacity:.88;max-width:520px;font-size:14.5px}
+.hero .stats{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.hero .step{display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:8px 12px;font-size:13px;font-weight:600}
+.hero .step i{font-style:normal;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#3b2a05;display:grid;place-items:center;font-size:12px;font-weight:800;flex:none}
+.hero .count{margin-left:auto;text-align:center;background:#fff;color:var(--brand-d);border-radius:14px;padding:8px 16px;min-width:96px}
+.hero .count b{display:block;font-size:24px;line-height:1.1}
+.hero .count small{font-size:11.5px;font-weight:600;color:var(--muted)}
+@media(max-width:480px){.hero{padding:18px 16px;border-radius:16px}.hero h1{font-size:21px}.hero .count{margin-left:0}}
+@media(min-width:1100px){.hero{padding:30px 32px}.hero h1{font-size:32px}}
+.card{border-radius:18px}
+#formTamu{border-top:4px solid var(--brand)}
+.side{border-top:4px solid var(--accent)}
+.card h2{letter-spacing:-.01em}
+.btn:not(.ghost){background:linear-gradient(135deg,var(--brand),#13878a);box-shadow:0 4px 14px rgba(15,107,110,.28)}
+.btn:not(.ghost):hover{background:linear-gradient(135deg,var(--brand-d),var(--brand))}
+.item{transition:background .15s;border-radius:10px;padding-left:6px;padding-right:6px}
+.item:hover{background:#f4f9f9}
+.tbl img{cursor:zoom-in;transition:transform .15s}
+.tbl img:hover{transform:scale(1.05)}
+
+/* ---------- Pratinjau tanda tangan ---------- */
+.lightbox{position:fixed;inset:0;z-index:70;background:rgba(10,30,34,.7);display:flex;align-items:center;justify-content:center;padding:20px}
+.lb-box{background:#fff;border-radius:16px;padding:16px;max-width:560px;width:100%;text-align:center}
+.lb-box img{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:10px;background:#fff}
+.lb-box h3{margin:0 0 10px;font-size:16px}
+.lb-box .actions{display:flex;gap:10px;justify-content:center;margin-top:14px}
+#vTamu{max-width:880px;margin:0 auto}
+@media(min-width:1100px){.tamu-grid{grid-template-columns:minmax(0,1fr)}}
+.chip.icon{width:36px;height:36px;padding:0;display:inline-grid;place-items:center;border-radius:50%}
+.chip.icon svg{width:18px;height:18px}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="logo"><img alt="Buku Tamu" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjiswXTIPorJtky03e8D2N_5OzX1GYn0ufim4km6YMymg6MxWU_JBuNdLqVu_i97qsEF0_-MZn9OhSupaoZ_mH0mkImgp3KqPoxHVateHlbdlguOqf-tYWS9BioY64QQ90SmL_8hHuMmNs2tU0kO2p43eQ3jQQ784nCe60Sk9xp5399WBhJOincLPseHn18/s320/icon-buku-tamu-512.png"></div>
+    <div><b>Buku Tamu</b><small>Catat setiap kunjungan dengan rapi</small></div>
+  </div>
+  <div class="top-actions">
+    <button class="chip active" id="btnTamu" type="button">Isi Buku Tamu</button>
+    <button class="chip icon" id="btnAdmin" type="button" title="Admin" aria-label="Admin"><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.5-3.2 8.2-8 9-4.8-.8-8-4.5-8-9V6l8-3z"/><circle cx="12" cy="10" r="2.5"/><path d="M7.5 17c.9-2 2.6-3 4.5-3s3.6 1 4.5 3"/></svg></button>
+    <button class="chip hidden" id="btnKeluar" type="button">Keluar</button>
+  </div>
+</header>
+
+<main>
+  <!-- ===================== HALAMAN TAMU ===================== -->
+  <section id="vTamu" class="tamu-grid">
+    <div class="hero">
+      <span class="tgl"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span id="heroTgl">&nbsp;</span></span>
+      <h1>Selamat Datang</h1>
+      <p>Silakan isi buku tamu sebelum bertemu. Data Anda tercatat rapi dan aman.</p>
+      <div class="stats">
+        <div class="step"><i>1</i>Masukkan kode</div>
+        <div class="step"><i>2</i>Isi data kunjungan</div>
+        <div class="step"><i>3</i>Tanda tangan</div>
+      </div>
+    </div>
+    <form id="formTamu" class="card" novalidate autocomplete="off">
+      <h2>Form Buku Tamu</h2>
+      <p class="sub">Isi data kunjungan, lalu bubuhkan tanda tangan di kotak yang tersedia.</p>
+      <div id="sukses" class="alert ok hidden" role="status"></div>
+      <div class="grid-form">
+        <label class="f"><span>Kode Akses (4 digit) <i>*</i></span>
+          <input id="kode" class="kode" type="password" inputmode="numeric" maxlength="4" placeholder="••••" autocomplete="off">
+          <small class="hint">Kode diberikan oleh petugas penerima tamu.</small>
+        </label>
+        <label class="f"><span>Tanggal <i>*</i></span>
+          <input id="tanggal" type="date">
+        </label>
+        <label class="f"><span>No. Urut</span>
+          <div class="row-inline">
+            <input id="no" type="number" min="1" inputmode="numeric">
+            <button type="button" class="btn ghost sm" id="btnOto" title="Kembalikan ke nomor otomatis">Otomatis</button>
+          </div>
+          <small class="hint">Terisi otomatis, boleh diubah.</small>
+        </label>
+        <label class="f"><span>Nama <i>*</i></span>
+          <input id="nama" type="text" maxlength="100" placeholder="Nama lengkap">
+        </label>
+        <label class="f"><span>Jabatan <i>*</i></span>
+          <input id="jabatan" type="text" maxlength="100" placeholder="Jabatan / instansi">
+        </label>
+        <label class="f"><span>Diterima Oleh <i>*</i></span>
+          <input id="diterima" type="text" maxlength="100" placeholder="Nama penerima tamu">
+        </label>
+        <label class="f span2"><span>Maksud Kunjungan <i>*</i></span>
+          <textarea id="maksud" maxlength="500" placeholder="Tuliskan keperluan kunjungan"></textarea>
+        </label>
+        <label class="f span2"><span>Catatan Khusus &amp; Pembinaan</span>
+          <textarea id="catatan" maxlength="1000" placeholder="Opsional"></textarea>
+        </label>
+        <div class="f span2">
+          <span class="lbl">Tanda Tangan <i>*</i></span>
+          <div class="pad" id="padTamu">
+            <canvas></canvas><div class="base"></div><div class="ph">Tanda tangan di sini</div>
+          </div>
+          <div class="pad-tools"><small class="hint">Gunakan jari atau mouse.</small><button type="button" class="btn ghost sm" id="btnHapusTtd">Hapus</button></div>
+        </div>
+        <div class="span2"><button class="btn block" id="btnKirim" type="submit">Kirim ke Buku Tamu</button></div>
+      </div>
+    </form>
+
+  </section>
+
+  <!-- ===================== LOGIN ADMIN ===================== -->
+  <section id="vLogin" class="hidden">
+    <form id="formLogin" class="card login" autocomplete="on">
+      <h2>Masuk Admin</h2>
+      <p class="sub">Masuk untuk mengelola daftar buku tamu.</p>
+      <div class="grid-form">
+        <label class="f"><span>Username</span><input id="lgUser" type="text" autocomplete="username" autocapitalize="none" spellcheck="false"></label>
+        <label class="f"><span>Password</span><input id="lgPass" type="password" autocomplete="current-password"></label>
+        <button class="btn block" id="btnLogin" type="submit">Masuk</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- ===================== PANEL ADMIN ===================== -->
+  <section id="vAdmin" class="admin hidden">
+    <nav class="anav" aria-label="Menu admin">
+      <button type="button" data-tab="list" class="on"><svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg><span>Daftar Buku Tamu</span></button>
+      <button type="button" data-tab="hari"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span>Tamu Hari Ini</span></button>
+      <button type="button" data-tab="kode"><svg viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.78 7.78 5.5 5.5 0 0 1 7.78-7.78zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg><span>Kode Akses</span></button>
+      <button type="button" data-tab="akun"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Pengaturan Akun</span></button>
+    </nav>
+
+    <div>
+      <!-- Daftar -->
+      <div class="pane" id="paneList">
+        <div class="card" id="listCard">
+          <h2>Daftar Buku Tamu</h2>
+          <p class="sub">Data terbaru tampil paling atas. Gunakan tombol Edit untuk mengubah data.</p>
+          <div class="toolbar"><input id="cari" type="search" placeholder="Cari nama, jabatan, maksud, tanggal…"></div>
+          <div class="tablewrap">
+            <table class="tbl">
+              <thead><tr><th>No</th><th>Tanggal</th><th>Nama</th><th>Jabatan</th><th>Maksud Kunjungan</th><th>Diterima Oleh</th><th>Catatan &amp; Pembinaan</th><th>Tanda Tangan</th><th>Aksi</th></tr></thead>
+              <tbody id="listBody"></tbody>
+            </table>
+          </div>
+          <div class="pager"><span id="pgInfo"></span><div><button class="btn ghost sm" id="pgPrev" type="button">‹ Sebelumnya</button><button class="btn ghost sm" id="pgNext" type="button">Berikutnya ›</button></div></div>
+        </div>
+      </div>
+
+      <!-- Tamu hari ini -->
+      <div class="pane hidden" id="paneHari">
+        <div class="card" id="hariCard">
+          <h2>Tamu Hari Ini <span class="badge" id="cntHariIni">0</span></h2>
+          <p class="sub" id="hariTgl">Daftar kunjungan hari ini.</p>
+          <div class="tablewrap">
+            <table class="tbl">
+              <thead><tr><th>No</th><th>Tanggal</th><th>Nama</th><th>Jabatan</th><th>Maksud Kunjungan</th><th>Diterima Oleh</th><th>Catatan &amp; Pembinaan</th><th>Tanda Tangan</th><th>Aksi</th></tr></thead>
+              <tbody id="hariBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Kode akses -->
+      <div class="pane hidden" id="paneKode">
+        <form class="card" id="formKode" autocomplete="off">
+          <h2>Kode Akses</h2>
+          <p class="sub">Tamu harus memasukkan kode 4 digit ini agar buku tamu dapat dikirim.</p>
+          <div class="grid-form" style="max-width:360px">
+            <label class="f"><span>Kode akses saat ini</span><input id="kodeAdmin" class="kode" type="text" inputmode="numeric" maxlength="4"></label>
+            <div class="row-inline"><button class="btn" id="btnSimpanKode" type="submit">Simpan Kode</button><button type="button" class="btn ghost" id="btnAcak">Acak</button></div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Akun -->
+      <div class="pane hidden" id="paneAkun">
+        <form class="card" id="formAkun" autocomplete="off">
+          <h2>Pengaturan Akun</h2>
+          <p class="sub">Ubah username atau password admin. Password saat ini wajib diisi untuk konfirmasi.</p>
+          <div class="grid-form" style="max-width:560px">
+            <label class="f span2"><span>Username</span><input id="akUser" type="text" autocomplete="username" autocapitalize="none" spellcheck="false"></label>
+            <label class="f span2"><span>Password saat ini <i>*</i></span><input id="akLama" type="password" autocomplete="current-password"></label>
+            <label class="f"><span>Password baru</span><input id="akBaru" type="password" autocomplete="new-password" placeholder="Kosongkan jika tidak diubah"></label>
+            <label class="f"><span>Ulangi password baru</span><input id="akUlang" type="password" autocomplete="new-password"></label>
+            <div class="span2"><button class="btn" id="btnSimpanAkun" type="submit">Simpan Perubahan</button></div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ===================== MODAL EDIT ===================== -->
+<div class="modal hidden" id="modal" role="dialog" aria-modal="true" aria-labelledby="mdTitle">
+  <form class="sheet" id="formEdit" novalidate autocomplete="off">
+    <h2 id="mdTitle">Edit Data Tamu</h2>
+    <div class="grid-form">
+      <label class="f"><span>No. Urut <i>*</i></span><input id="eNo" type="number" min="1" inputmode="numeric"></label>
+      <label class="f"><span>Tanggal <i>*</i></span><input id="eTanggal" type="date"></label>
+      <label class="f"><span>Nama <i>*</i></span><input id="eNama" type="text" maxlength="100"></label>
+      <label class="f"><span>Jabatan <i>*</i></span><input id="eJabatan" type="text" maxlength="100"></label>
+      <label class="f span2"><span>Maksud Kunjungan <i>*</i></span><textarea id="eMaksud" maxlength="500"></textarea></label>
+      <label class="f span2"><span>Diterima Oleh <i>*</i></span><input id="eDiterima" type="text" maxlength="100"></label>
+      <label class="f span2"><span>Catatan Khusus &amp; Pembinaan</span><textarea id="eCatatan" maxlength="1000"></textarea></label>
+      <div class="f span2">
+        <span class="lbl">Tanda Tangan</span>
+        <div id="eTtdCur" class="hidden"><div class="ttd-cur"><img id="eTtdImg" alt="Tanda tangan"></div><div style="margin-top:8px"><button type="button" class="btn ghost sm" id="btnGantiTtd">Gambar ulang tanda tangan</button></div></div>
+        <div id="eTtdNew" class="hidden">
+          <div class="pad" id="padEdit"><canvas></canvas><div class="base"></div><div class="ph">Tanda tangan baru di sini</div></div>
+          <div class="pad-tools"><small class="hint">Kosongkan jika tidak ingin mengubah.</small><button type="button" class="btn ghost sm" id="btnHapusTtdEdit">Hapus</button></div>
+        </div>
+      </div>
+    </div>
+    <div class="actions"><button type="button" class="btn ghost" id="btnBatalEdit">Batal</button><button type="submit" class="btn" id="btnSimpanEdit">Simpan</button></div>
+  </form>
+</div>
+
+<!-- ===================== MODAL HAPUS ===================== -->
+<div class="modal hidden" id="modalHapus" role="dialog" aria-modal="true" aria-labelledby="hpTitle">
+  <div class="sheet confirm-sheet">
+    <h2 id="hpTitle">Hapus data tamu?</h2>
+    <p>Data <b id="hpNama"></b> akan dihapus permanen dari buku tamu dan spreadsheet. Tindakan ini tidak dapat dibatalkan.</p>
+    <div class="actions"><button type="button" class="btn ghost" id="btnBatalHapus">Batal</button><button type="button" class="btn danger" id="btnYaHapus">Ya, Hapus</button></div>
+  </div>
+</div>
+
+<div class="lightbox hidden" id="lightbox" role="dialog" aria-modal="true">
+  <div class="lb-box">
+    <h3 id="lbJudul">Tanda Tangan</h3>
+    <img id="lbImg" alt="Tanda tangan">
+    <div class="actions"><a class="btn ghost" id="lbUnduh" download="tanda-tangan.png">Unduh gambar</a><button type="button" class="btn" id="lbTutup">Tutup</button></div>
+  </div>
+</div>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+  'use strict';
+  /* ===== PENGATURAN: tempel URL Web App Apps Script (berakhiran /exec) di sini ===== */
+  var API_URL = 'https://script.google.com/macros/s/AKfycbwn-NWP-RA3TegSKKCg2TQb09m0MnLuz666XSmrUkprwoFSkWeSQkjzV2gebaf-X2vq/exec';
+  /* ================================================================================ */
+  var $ = function (s) { return document.querySelector(s); };
+  var $$ = function (s) { return Array.prototype.slice.call(document.querySelectorAll(s)); };
+  var esc = function (s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  };
+  var S = { nextNo: 1, today: '', manual: false, token: null, page: 1, pages: 1, q: '', rows: [], editId: null, tab: 'list' };
+
+  /* ---------- penyimpanan sesi (aman jika diblokir) ---------- */
+  var store = {
+    get: function (k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } },
+    set: function (k, v) { try { sessionStorage.setItem(k, v); } catch (e) { /* abaikan */ } },
+    del: function (k) { try { sessionStorage.removeItem(k); } catch (e) { /* abaikan */ } }
+  };
+  S.token = store.get('bt_token');
+
+  /* ---------- util ---------- */
+  var toastTimer;
+  function toast(msg, tipe) {
+    var t = $('#toast');
+    t.textContent = msg;
+    t.className = 'show ' + (tipe || '');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.className = ''; }, 3600);
+  }
+  function pesan(e) {
+    var m = (e && e.message) ? e.message : String(e || 'Terjadi kesalahan.');
+    return m.replace(/^(Error|Exception):\s*/i, '');
+  }
+  function api(fn) {
+    var args = Array.prototype.slice.call(arguments, 1);
+    if (!API_URL || API_URL.indexOf('GANTI_DENGAN') > -1) {
+      return Promise.reject(new Error('API_URL belum diisi di index.html.'));
+    }
+    // Content-Type default (text/plain) sengaja dipakai agar tidak memicu preflight CORS Apps Script.
+    return fetch(API_URL, { method: 'POST', body: JSON.stringify({ fn: fn, args: args }), redirect: 'follow' })
+      .then(function (r) { return r.json(); })
+      .catch(function (e) {
+        if (e instanceof TypeError) throw new Error('Tidak dapat terhubung ke server. Periksa koneksi internet / API_URL.');
+        throw new Error('Respons server tidak valid.');
+      })
+      .then(function (j) {
+        if (!j || !j.ok) throw new Error((j && j.error) || 'Terjadi kesalahan.');
+        return j.data;
+      });
+  }
+  function setBusy(btn, on) { btn.classList.toggle('busy', !!on); btn.disabled = !!on; }
+  function tgl(s) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s || '');
+    return m ? m[3] + '/' + m[2] + '/' + m[1] : (s || '');
+  }
+
+  /* ---------- kotak tanda tangan ---------- */
+  function SigPad(wrap) {
+    var cv = wrap.querySelector('canvas'), ph = wrap.querySelector('.ph'), ctx = cv.getContext('2d');
+    var strokes = [], cur = null, dpr = 1;
+    function gambar(c, W, H, lw) {
+      c.lineCap = 'round'; c.lineJoin = 'round';
+      c.strokeStyle = '#0b1f24'; c.fillStyle = '#0b1f24'; c.lineWidth = lw;
+      strokes.forEach(function (s) {
+        if (s.length === 1) { c.beginPath(); c.arc(s[0][0] * W, s[0][1] * H, lw / 2, 0, Math.PI * 2); c.fill(); return; }
+        c.beginPath(); c.moveTo(s[0][0] * W, s[0][1] * H);
+        for (var i = 1; i < s.length; i++) c.lineTo(s[i][0] * W, s[i][1] * H);
+        c.stroke();
+      });
+    }
+    function redraw() {
+      ctx.clearRect(0, 0, cv.width, cv.height);
+      gambar(ctx, cv.width, cv.height, 2.4 * dpr);
+      ph.style.display = strokes.length ? 'none' : 'flex';
+    }
+    function resize() {
+      var r = cv.getBoundingClientRect();
+      if (!r.width) return;
+      dpr = window.devicePixelRatio || 1;
+      cv.width = Math.round(r.width * dpr);
+      cv.height = Math.round(r.height * dpr);
+      redraw();
+    }
+    function pos(e) {
+      var r = cv.getBoundingClientRect();
+      return [Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)), Math.min(1, Math.max(0, (e.clientY - r.top) / r.height))];
+    }
+    cv.addEventListener('pointerdown', function (e) {
+      e.preventDefault();
+      try { cv.setPointerCapture(e.pointerId); } catch (_) { /* abaikan */ }
+      cur = [pos(e)]; strokes.push(cur); redraw();
+    });
+    cv.addEventListener('pointermove', function (e) { if (!cur) return; e.preventDefault(); cur.push(pos(e)); redraw(); });
+    ['pointerup', 'pointercancel', 'lostpointercapture'].forEach(function (t) { cv.addEventListener(t, function () { cur = null; }); });
+    return {
+      resize: resize,
+      clear: function () { strokes = []; cur = null; redraw(); },
+      isEmpty: function () { return strokes.length === 0; },
+      toDataURL: function () {
+        var o = document.createElement('canvas'); o.width = 500; o.height = 200;
+        var c = o.getContext('2d'); c.fillStyle = '#fff'; c.fillRect(0, 0, 500, 200);
+        gambar(c, 500, 200, 3.2);
+        var u = o.toDataURL('image/png');
+        if (u.length > 45000) u = o.toDataURL('image/jpeg', 0.7);
+        return u;
+      }
+    };
+  }
+  var padTamu = SigPad($('#padTamu'));
+  var padEdit = SigPad($('#padEdit'));
+  window.addEventListener('resize', function () { padTamu.resize(); padEdit.resize(); });
+
+  /* ---------- navigasi tampilan ---------- */
+  function show(v) {
+    ['Tamu', 'Login', 'Admin'].forEach(function (n) { $('#v' + n).classList.toggle('hidden', ('v' + n) !== ('v' + v)); });
+    $('#btnTamu').classList.toggle('active', v === 'Tamu');
+    $('#btnAdmin').classList.toggle('active', v !== 'Tamu');
+    $('#btnKeluar').classList.toggle('hidden', !S.token);
+    window.scrollTo(0, 0);
+    if (v === 'Tamu') setTimeout(padTamu.resize, 0);
+  }
+  $('#btnTamu').addEventListener('click', function () { show('Tamu'); });
+  $('#btnAdmin').addEventListener('click', function () {
+    if (S.token) { show('Admin'); bukaTab(S.tab); } else { show('Login'); setTimeout(function () { $('#lgUser').focus(); }, 50); }
+  });
+  $('#btnKeluar').addEventListener('click', function () { keluar(false); });
+
+  function keluar(sesiHabis) {
+    var t = S.token;
+    S.token = null; store.del('bt_token');
+    if (t && !sesiHabis) api('adminLogout', t).catch(function () { });
+    show(sesiHabis ? 'Login' : 'Tamu');
+    if (!sesiHabis) toast('Anda telah keluar.', 'ok');
+  }
+  function tangani(e) {
+    var m = pesan(e);
+    if (m.indexOf('SESI_HABIS') > -1) { keluar(true); toast('Sesi berakhir, silakan masuk lagi.', 'err'); }
+    else toast(m, 'err');
+  }
+
+  /* =========================================================
+     HALAMAN TAMU
+     ========================================================= */
+  function muatInit() {
+    return api('getInit').then(function (d) {
+      S.nextNo = d.nextNo; S.today = d.today;
+      if (!S.manual) $('#no').value = d.nextNo;
+      if (!$('#tanggal').value) $('#tanggal').value = d.today;
+    }).catch(function (e) { toast(pesan(e), 'err'); });
+  }
+  $('#no').addEventListener('input', function () { S.manual = true; });
+  $('#btnOto').addEventListener('click', function () { S.manual = false; $('#no').value = S.nextNo; });
+  $('#btnHapusTtd').addEventListener('click', function () { padTamu.clear(); });
+  $('#kode').addEventListener('input', function () { this.value = this.value.replace(/\D/g, '').slice(0, 4); });
+
+  function galat(sel, msg) { toast(msg, 'err'); var el = $(sel); if (el) el.focus(); }
+
+  $('#formTamu').addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var d = {
+      kode: $('#kode').value.trim(), no: $('#no').value, noManual: S.manual, tanggal: $('#tanggal').value,
+      nama: $('#nama').value.trim(), jabatan: $('#jabatan').value.trim(), maksud: $('#maksud').value.trim(),
+      diterima: $('#diterima').value.trim(), catatan: $('#catatan').value.trim(), ttd: ''
+    };
+    if (!/^\d{4}$/.test(d.kode)) return galat('#kode', 'Kode akses harus 4 digit angka.');
+    if (!d.tanggal) return galat('#tanggal', 'Tanggal wajib diisi.');
+    if (!d.nama) return galat('#nama', 'Nama wajib diisi.');
+    if (!d.jabatan) return galat('#jabatan', 'Jabatan wajib diisi.');
+    if (!d.maksud) return galat('#maksud', 'Maksud kunjungan wajib diisi.');
+    if (!d.diterima) return galat('#diterima', 'Kolom "Diterima oleh" wajib diisi.');
+    if (padTamu.isEmpty()) return toast('Tanda tangan wajib diisi.', 'err');
+    d.ttd = padTamu.toDataURL();
+
+    var btn = $('#btnKirim'); setBusy(btn, true);
+    api('kirimTamu', d).then(function (r) {
+      var box = $('#sukses');
+      box.textContent = 'Terima kasih, ' + d.nama + '. Kunjungan Anda tercatat dengan nomor urut ' + r.no + '.';
+      box.classList.remove('hidden');
+      setTimeout(function () { box.classList.add('hidden'); }, 9000);
+      ['kode', 'nama', 'jabatan', 'maksud', 'diterima', 'catatan'].forEach(function (id) { $('#' + id).value = ''; });
+      $('#tanggal').value = S.today; S.manual = false;
+      padTamu.clear();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return muatInit();
+    }).catch(function (e) { toast(pesan(e), 'err'); })
+      .then(function () { setBusy(btn, false); });
+  });
+
+  /* =========================================================
+     LOGIN
+     ========================================================= */
+  $('#formLogin').addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var u = $('#lgUser').value.trim(), p = $('#lgPass').value;
+    if (!u || !p) return toast('Username dan password wajib diisi.', 'err');
+    var btn = $('#btnLogin'); setBusy(btn, true);
+    api('adminLogin', u, p).then(function (t) {
+      S.token = t; store.set('bt_token', t);
+      $('#lgPass').value = '';
+      show('Admin'); bukaTab('list');
+    }).catch(function (e) { toast(pesan(e), 'err'); })
+      .then(function () { setBusy(btn, false); });
+  });
+
+  /* =========================================================
+     ADMIN - tab
+     ========================================================= */
+  $$('.anav button').forEach(function (b) { b.addEventListener('click', function () { bukaTab(b.getAttribute('data-tab')); }); });
+  function bukaTab(nama) {
+    S.tab = nama;
+    $$('.anav button').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-tab') === nama); });
+    $('#paneList').classList.toggle('hidden', nama !== 'list');
+    $('#paneHari').classList.toggle('hidden', nama !== 'hari');
+    $('#paneKode').classList.toggle('hidden', nama !== 'kode');
+    $('#paneAkun').classList.toggle('hidden', nama !== 'akun');
+    window.scrollTo(0, 0);
+    if (nama === 'list') muatDaftar();
+    if (nama === 'hari') muatHariIni();
+    if (nama === 'kode') api('adminGetKode', S.token).then(function (k) { $('#kodeAdmin').value = k; }).catch(tangani);
+    if (nama === 'akun') {
+      ['akLama', 'akBaru', 'akUlang'].forEach(function (id) { $('#' + id).value = ''; });
+      api('adminGetAkun', S.token).then(function (a) { $('#akUser').value = a.username; }).catch(tangani);
+    }
+  }
+
+  /* ---------- daftar ---------- */
+  function muatDaftar() {
+    $('#listBody').innerHTML = '<tr><td colspan="9" class="empty">Memuat…</td></tr>';
+    api('adminList', S.token, S.page, S.q).then(function (d) {
+      S.rows = d.rows; S.page = d.page; S.pages = d.pages;
+      renderDaftar(d);
+    }).catch(tangani);
+  }
+  function renderDaftar(d, tbody) {
+    var body = tbody || $('#listBody');
+    if (!d.rows.length) {
+      body.innerHTML = '<tr><td colspan="9" class="empty">' + (tbody ? 'Belum ada tamu hari ini.' : S.q ? 'Tidak ada data yang cocok.' : 'Belum ada data buku tamu.') + '</td></tr>';
+    } else {
+      body.innerHTML = d.rows.map(function (r) {
+        return '<tr>' +
+          '<td data-label="No">' + esc(r.no) + '</td>' +
+          '<td data-label="Tanggal">' + esc(tgl(r.tanggal)) + '</td>' +
+          '<td data-label="Nama"><b>' + esc(r.nama) + '</b></td>' +
+          '<td data-label="Jabatan">' + esc(r.jabatan) + '</td>' +
+          '<td data-label="Maksud" class="pre">' + esc(r.maksud) + '</td>' +
+          '<td data-label="Diterima Oleh">' + esc(r.diterima) + '</td>' +
+          '<td data-label="Catatan" class="pre">' + (r.catatan ? esc(r.catatan) : '<span class="hint">-</span>') + '</td>' +
+          '<td data-label="Tanda Tangan">' + (r.ttd ? '<img data-zoom="1" data-nama="' + esc(r.nama) + '" title="Klik untuk memperbesar" alt="Tanda tangan ' + esc(r.nama) + '" src="' + esc(r.ttd) + '">' : '<span class="hint">-</span>') + '</td>' +
+          '<td class="aksi"><div class="aksi-wrap"><button class="btn sm ghost" type="button" data-edit="' + esc(r.id) + '">Edit</button>' +
+          '<button class="btn sm ghost danger-o" type="button" data-hapus="' + esc(r.id) + '">Hapus</button></div></td>' +
+          '</tr>';
+      }).join('');
+    }
+    if (tbody) return;
+    $('#pgInfo').textContent = 'Halaman ' + d.page + ' dari ' + d.pages + ' · ' + d.total + ' data';
+    $('#pgPrev').disabled = d.page <= 1;
+    $('#pgNext').disabled = d.page >= d.pages;
+  }
+  function klikEdit(e) {
+    var b = e.target.closest('[data-edit]');
+    if (b) return bukaEdit(b.getAttribute('data-edit'));
+    var h = e.target.closest('[data-hapus]');
+    if (h) bukaHapus(h.getAttribute('data-hapus'));
+  }
+
+  /* ---------- hapus (dengan konfirmasi) ---------- */
+  function bukaHapus(id) {
+    var r = S.rows.filter(function (x) { return x.id === id; })[0];
+    if (!r) return;
+    S.hapusId = id;
+    $('#hpNama').textContent = r.nama + ' (No. ' + r.no + ', ' + tgl(r.tanggal) + ')';
+    $('#modalHapus').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+  function tutupHapus() {
+    $('#modalHapus').classList.add('hidden');
+    document.body.style.overflow = '';
+    S.hapusId = null;
+  }
+  $('#btnBatalHapus').addEventListener('click', tutupHapus);
+  $('#modalHapus').addEventListener('mousedown', function (e) { if (e.target === this) tutupHapus(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !$('#modalHapus').classList.contains('hidden')) tutupHapus(); });
+  $('#btnYaHapus').addEventListener('click', function () {
+    var id = S.hapusId, btn = this;
+    if (!id) return;
+    setBusy(btn, true);
+    api('adminHapus', S.token, id).then(function () {
+      tutupHapus(); toast('Data berhasil dihapus.', 'ok');
+      if (S.tab === 'hari') muatHariIni(); else muatDaftar();
+    }).catch(function (e) { tutupHapus(); tangani(e); }).then(function () { setBusy(btn, false); });
+  });
+  $('#listBody').addEventListener('click', klikEdit);
+  $('#hariBody').addEventListener('click', klikEdit);
+  function muatHariIni() {
+    $('#hariBody').innerHTML = '<tr><td colspan="9" class="empty">Memuat…</td></tr>';
+    api('adminHariIni', S.token).then(function (d) {
+      S.rows = d.rows;
+      $('#cntHariIni').textContent = d.rows.length;
+      $('#hariTgl').textContent = 'Kunjungan tanggal ' + tgl(d.today) + '.';
+      renderDaftar({ rows: d.rows }, $('#hariBody'));
+    }).catch(tangani);
+  }
+  $('#pgPrev').addEventListener('click', function () { if (S.page > 1) { S.page--; muatDaftar(); } });
+  $('#pgNext').addEventListener('click', function () { if (S.page < S.pages) { S.page++; muatDaftar(); } });
+  /* ---------- pratinjau & unduh tanda tangan ---------- */
+  function bukaLightbox(src, nama) {
+    var ext = /^data:image\/jpeg/.test(src) ? 'jpg' : 'png';
+    $('#lbImg').src = src;
+    $('#lbJudul').textContent = 'Tanda tangan ' + (nama || '');
+    var a = $('#lbUnduh');
+    a.href = src;
+    a.setAttribute('download', 'tanda-tangan-' + String(nama || 'tamu').replace(/[^\w\-]+/g, '_') + '.' + ext);
+    $('#lightbox').classList.remove('hidden');
+  }
+  function tutupLightbox() { $('#lightbox').classList.add('hidden'); $('#lbImg').removeAttribute('src'); }
+  document.querySelector('main').addEventListener('click', function (e) {
+    var im = e.target.closest('img[data-zoom]');
+    if (im) bukaLightbox(im.getAttribute('src'), im.getAttribute('data-nama'));
+  });
+  $('#lbTutup').addEventListener('click', tutupLightbox);
+  $('#lightbox').addEventListener('mousedown', function (e) { if (e.target === this) tutupLightbox(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !$('#lightbox').classList.contains('hidden')) tutupLightbox(); });
+
+  var cariTimer;
+  $('#cari').addEventListener('input', function () {
+    var v = this.value;
+    clearTimeout(cariTimer);
+    cariTimer = setTimeout(function () { S.q = v.trim(); S.page = 1; muatDaftar(); }, 350);
+  });
+
+  /* ---------- edit ---------- */
+  function bukaEdit(id) {
+    var r = S.rows.filter(function (x) { return x.id === id; })[0];
+    if (!r) return;
+    S.editId = id;
+    $('#eNo').value = r.no; $('#eTanggal').value = r.tanggal; $('#eNama').value = r.nama;
+    $('#eJabatan').value = r.jabatan; $('#eMaksud').value = r.maksud;
+    $('#eDiterima').value = r.diterima; $('#eCatatan').value = r.catatan;
+    padEdit.clear();
+    if (r.ttd) {
+      $('#eTtdImg').src = r.ttd;
+      $('#eTtdCur').classList.remove('hidden'); $('#eTtdNew').classList.add('hidden');
+    } else {
+      $('#eTtdCur').classList.add('hidden'); $('#eTtdNew').classList.remove('hidden');
+    }
+    $('#modal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    setTimeout(padEdit.resize, 0);
+  }
+  function tutupEdit() {
+    $('#modal').classList.add('hidden');
+    document.body.style.overflow = '';
+    S.editId = null;
+  }
+  $('#btnGantiTtd').addEventListener('click', function () {
+    $('#eTtdCur').classList.add('hidden'); $('#eTtdNew').classList.remove('hidden');
+    setTimeout(padEdit.resize, 0);
+  });
+  $('#btnHapusTtdEdit').addEventListener('click', function () { padEdit.clear(); });
+  $('#btnBatalEdit').addEventListener('click', tutupEdit);
+  $('#modal').addEventListener('mousedown', function (e) { if (e.target === this) tutupEdit(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !$('#modal').classList.contains('hidden')) tutupEdit(); });
+
+  $('#formEdit').addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var d = {
+      id: S.editId, no: $('#eNo').value, tanggal: $('#eTanggal').value, nama: $('#eNama').value.trim(),
+      jabatan: $('#eJabatan').value.trim(), maksud: $('#eMaksud').value.trim(),
+      diterima: $('#eDiterima').value.trim(), catatan: $('#eCatatan').value.trim(), ttd: null
+    };
+    if (!d.no) return galat('#eNo', 'No urut wajib diisi.');
+    if (!d.tanggal) return galat('#eTanggal', 'Tanggal wajib diisi.');
+    if (!d.nama) return galat('#eNama', 'Nama wajib diisi.');
+    if (!d.jabatan) return galat('#eJabatan', 'Jabatan wajib diisi.');
+    if (!d.maksud) return galat('#eMaksud', 'Maksud kunjungan wajib diisi.');
+    if (!d.diterima) return galat('#eDiterima', 'Kolom "Diterima oleh" wajib diisi.');
+    if (!$('#eTtdNew').classList.contains('hidden') && !padEdit.isEmpty()) d.ttd = padEdit.toDataURL();
+    var btn = $('#btnSimpanEdit'); setBusy(btn, true);
+    api('adminUpdate', S.token, d).then(function () {
+      tutupEdit(); toast('Data berhasil diperbarui.', 'ok'); if (S.tab === 'hari') muatHariIni(); else muatDaftar();
+    }).catch(tangani).then(function () { setBusy(btn, false); });
+  });
+
+  /* ---------- kode akses ---------- */
+  $('#kodeAdmin').addEventListener('input', function () { this.value = this.value.replace(/\D/g, '').slice(0, 4); });
+  $('#btnAcak').addEventListener('click', function () {
+    var n = Math.floor(Math.random() * 10000);
+    $('#kodeAdmin').value = ('000' + n).slice(-4);
+  });
+  $('#formKode').addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var k = $('#kodeAdmin').value.trim();
+    if (!/^\d{4}$/.test(k)) return galat('#kodeAdmin', 'Kode akses harus tepat 4 digit angka.');
+    var btn = $('#btnSimpanKode'); setBusy(btn, true);
+    api('adminSetKode', S.token, k).then(function () { toast('Kode akses disimpan.', 'ok'); })
+      .catch(tangani).then(function () { setBusy(btn, false); });
+  });
+
+  /* ---------- akun ---------- */
+  $('#formAkun').addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var u = $('#akUser').value.trim(), lama = $('#akLama').value, baru = $('#akBaru').value, ulang = $('#akUlang').value;
+    if (!u) return galat('#akUser', 'Username wajib diisi.');
+    if (!lama) return galat('#akLama', 'Masukkan password saat ini.');
+    if (baru && baru.length < 6) return galat('#akBaru', 'Password baru minimal 6 karakter.');
+    if (baru !== ulang) return galat('#akUlang', 'Ulangi password baru dengan benar.');
+    var btn = $('#btnSimpanAkun'); setBusy(btn, true);
+    api('adminUbahAkun', S.token, lama, u, baru).then(function () {
+      ['akLama', 'akBaru', 'akUlang'].forEach(function (id) { $('#' + id).value = ''; });
+      toast('Pengaturan akun disimpan.', 'ok');
+    }).catch(tangani).then(function () { setBusy(btn, false); });
+  });
+
+  /* ---------- mulai ---------- */
+  try {
+    $('#heroTgl').textContent = new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Jakarta' });
+  } catch (e) { $('#heroTgl').textContent = 'Buku Tamu'; }
+  show('Tamu');
+  muatInit();
+})();
+</script>
+</body>
+</html>
